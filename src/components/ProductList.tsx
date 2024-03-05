@@ -5,11 +5,11 @@ import ProductCard from "./ProductCard";
 const ProductList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
-  const [sortType, setSortType] = useState("priceHighToLow" as string);
   const [listFormat, setListFormat] = useState("grid" as "grid" | "list");
 
   useEffect(() => {
     // Fetch data from the API
+    setLoading(true);
     fetch(
       "https://kabsa.yallababy.com/api/v1/products/best-selling-products-by-subcategory",
       {
@@ -27,7 +27,6 @@ const ProductList: React.FC = () => {
         );
         const uniqueProducts = Array.from(productsMap.values());
         setProducts(uniqueProducts);
-        setLoading(false);
         console.log(data);
       })
       .catch((error) => {
@@ -37,9 +36,11 @@ const ProductList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    handleSortChange(sortType);
+    handleSortChange("priceHighToLow");
+    setLoading(false);
   }, []);
 
+  // TODO move sorting to utils
   const handleSortChange = (sortType: string) => {
     let sortedProducts = [...products];
     switch (sortType) {
@@ -72,31 +73,42 @@ const ProductList: React.FC = () => {
       </div>
     );
   }
+
   return (
-    <div>
-      <div className="flex justify-between px-4">
-        <div>Available Deals: {products.length}</div>
-        <div className="flex flex-row">
-          <div onClick={() => setListFormat("grid")}>
-            <Squares2X2Icon className="h-6 w-6" />
-          </div>
-          <div onClick={() => setListFormat("list")}>
-            <ListBulletIcon className="h-6 w-6" />
-          </div>
-          <div className="ml-6">
-            Sort results:{" "}
-            <select onChange={(e) => handleSortChange(e.target.value)}>
-              <option value="priceHighToLow">Price High to Low</option>
-              <option value="priceLowToHigh">Price Low to High</option>
-              <option value="alphabeticalAsc">Alphabetical (A-Z)</option>
-              <option value="alphabeticalDesc">Alphabetical (Z-A)</option>
-            </select>
+    <div className="flex p-4">
+      <div className="flex py-3">
+        <div className="min-w-52 text-center">Filter Results</div>
+      </div>
+      <div className="flex flex-col flex-1">
+        <div className="flex justify-between px-4 py-3">
+          <div>Available Deals: {products.length}</div>
+          <div className="flex flex-row gap-3">
+            <div
+              onClick={() => setListFormat("grid")}
+              className="cursor-pointer"
+            >
+              <Squares2X2Icon className="h-6 w-6" />
+            </div>
+            <div
+              onClick={() => setListFormat("list")}
+              className="cursor-pointer"
+            >
+              <ListBulletIcon className="h-6 w-6" />
+            </div>
+            <div className="ml-6">
+              Sort results:{" "}
+              <select onChange={(e) => handleSortChange(e.target.value)}>
+                <option value="priceHighToLow">Price High to Low</option>
+                <option value="priceLowToHigh">Price Low to High</option>
+                <option value="alphabeticalAsc">Alphabetical (A-Z)</option>
+                <option value="alphabeticalDesc">Alphabetical (Z-A)</option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="flex">
-        <div className="min-w-28">Filter Results</div>
-        <div className="grid grid-cols-3 gap-3">
+        <div
+          className={`grid grid-cols-${listFormat === "grid" ? "3" : "1"} gap-3`}
+        >
           {products.map((product: any) => (
             <ProductCard product={product} key={product.id} />
           ))}

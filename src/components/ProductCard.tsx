@@ -33,7 +33,7 @@ const ProductCard = (props: ProductCardProps) => {
         className="h-24 object-contain justify-center mb-3"
       />
       <h3 className="text-center">{title}</h3>
-      <p>{product_type}</p>
+      <p>{product_type.charAt(0).toUpperCase() + product_type.slice(1)}</p>
       <p>Quantity Sold: {quantitySold}</p>
     </div>
   );
