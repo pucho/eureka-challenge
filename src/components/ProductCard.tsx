@@ -29,7 +29,7 @@ const ProductCard = (props: ProductCardProps) => {
 
   const createClassNames = (cardType: string) => {
     let classNames =
-      "p-3 rounded overflow-hidden shadow-lg flex border border-gray-500 hover:shadow-2xl transition duration-300 ease-in-out hover:bg-gray-500";
+      "bg-gray-600 p-3 rounded overflow-hidden shadow-lg flex border border-gray-500 hover:shadow-2xl transition duration-300 ease-in-out hover:bg-gray-500";
     if (cardType === "list") {
       classNames += " flex-row";
     } else {
@@ -46,7 +46,7 @@ const ProductCard = (props: ProductCardProps) => {
         className="h-24 object-contain self-center mb-3"
       />
       <div className={`${type === "list" && "ml-3"}`}>
-        <h3 className="text-center">{title}</h3>
+        <h3 className="text-center mb-2">{title}</h3>
         <p>{product_type.charAt(0).toUpperCase() + product_type.slice(1)}</p>
         <p>Quantity Sold: {quantitySold}</p>
       </div>
