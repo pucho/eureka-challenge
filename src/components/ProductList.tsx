@@ -1,91 +1,57 @@
 import { useEffect, useState } from "react";
 import { Squares2X2Icon, ListBulletIcon } from "@heroicons/react/24/outline";
 import ProductCard from "./ProductCard";
+import useFetchProducts from "../hooks/useFetchProducts";
 
 const ProductList: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [productTypes, setProductTypes] = useState<string[]>([]);
+  const { loading, error, productTypes, products } = useFetchProducts();
   const [filters, setFilters] = useState<string[]>([]);
-  const [products, setProducts] = useState<any[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [listFormat, setListFormat] = useState("grid" as "grid" | "list");
-
-  useEffect(() => {
-    // Fetch data from the API
-    setLoading(true);
-    fetch(
-      "https://kabsa.yallababy.com/api/v1/products/best-selling-products-by-subcategory",
-      {
-        method: "GET",
-        headers: {
-          secretKey: "1DIPIkKeq8",
-        },
-      },
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        // Use a Map to track unique items
-        const productsMap = new Map(
-          data.map((product: any) => [product.id, product]),
-        );
-        const uniqueProducts = Array.from(productsMap.values());
-        setProducts(uniqueProducts);
-
-        const uniqueProductTypes = Array.from(
-          new Set(uniqueProducts.map((product: any) => product.product_type)),
-        );
-        setProductTypes(uniqueProductTypes);
-        setLoading(false);
-        console.log(data);
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error(error);
-        setError("Error fetching data");
-      });
-  }, []);
+  const [sortType, setSortType] = useState<string>("priceHighToLow");
 
   useEffect(() => {
     handleSortChange("priceHighToLow");
   }, []);
 
   useEffect(() => {
-    if (filters.length === 0) {
-      setFilteredProducts(products);
-      return;
-    }
-    const filteredProducts =
-      products.filter((product) => {
-        return filters.includes(product.product_type);
-      }) || products;
-    setFilteredProducts(filteredProducts);
-  }, [filters, products]);
+    let processedProducts = [...products];
 
-  // TODO move sorting to utils
-  const handleSortChange = (sortType: string) => {
-    let sortedProducts = [...products];
+    // Filter
+    if (filters.length > 0) {
+      processedProducts = processedProducts.filter((product) =>
+        filters.includes(product.product_type),
+      );
+    }
+
+    // Sort
+    processedProducts = sortProducts(processedProducts, sortType);
+
+    setFilteredProducts(processedProducts);
+  }, [filters, products, sortType]);
+
+  // TODO: Check sorting depending on variants or which variable
+  const sortProducts = (products: any[], sortType: string): any[] => {
     switch (sortType) {
       case "priceHighToLow":
-        sortedProducts.sort(
+        return products.sort(
           (a, b) => b.variants[0].price - a.variants[0].price,
         );
-        break;
       case "priceLowToHigh":
-        sortedProducts.sort(
+        return products.sort(
           (a, b) => a.variants[0].price - b.variants[0].price,
         );
-        break;
       case "alphabeticalAsc":
-        sortedProducts.sort((a, b) => a.title.localeCompare(b.title));
-        break;
+        return products.sort((a, b) => a.title.localeCompare(b.title));
       case "alphabeticalDesc":
-        sortedProducts.sort((a, b) => b.title.localeCompare(a.title));
-        break;
+        return products.sort((a, b) => b.title.localeCompare(a.title));
       default:
-        break;
+        return products;
     }
-    setProducts(sortedProducts);
+  };
+
+  const handleSortChange = (sortType: string) => {
+    setSortType(sortType);
   };
 
   if (loading) {

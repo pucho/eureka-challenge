@@ -37,7 +37,7 @@ const ProductCard = (props: ProductCardProps) => {
     }
     return classNames;
   };
-  console.log(type);
+
   return (
     <div className={createClassNames(type)}>
       <img
