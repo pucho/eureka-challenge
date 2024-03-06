@@ -17,4 +17,4 @@ With the env file setup, run:
 After install you can run your project locally using:
 `npm run dev`
 
-The project is currently deployed using Netlify at this [link](https://65e88083f661f1034946a1b8--eureka-challenge.netlify.app/)
+The project is currently deployed using Netlify at this [link](https://eureka-challenge.netlify.app)
