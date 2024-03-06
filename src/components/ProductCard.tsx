@@ -13,6 +13,7 @@ type Product = {
 
 type ProductCardProps = {
   product: Product;
+  type?: string;
 };
 
 const ProductCard = (props: ProductCardProps) => {
@@ -22,19 +23,33 @@ const ProductCard = (props: ProductCardProps) => {
       product_type,
       image: { src },
       quantitySold,
-      variants,
     },
+    type = "card",
   } = props;
+
+  const createClassNames = (cardType: string) => {
+    let classNames =
+      "p-3 rounded overflow-hidden shadow-lg flex border border-gray-500 hover:shadow-2xl transition duration-300 ease-in-out hover:bg-gray-500";
+    if (cardType === "list") {
+      classNames += " flex-row";
+    } else {
+      classNames += " flex-col";
+    }
+    return classNames;
+  };
+  console.log(type);
   return (
-    <div className="p-3 rounded overflow-hidden shadow-lg flex flex-col border border-gray-500 hover:bg-gray-500">
+    <div className={createClassNames(type)}>
       <img
         src={src}
         alt={title}
-        className="h-24 object-contain justify-center mb-3"
+        className="h-24 object-contain self-center mb-3"
       />
-      <h3 className="text-center">{title}</h3>
-      <p>{product_type.charAt(0).toUpperCase() + product_type.slice(1)}</p>
-      <p>Quantity Sold: {quantitySold}</p>
+      <div className={`${type === "list" && "ml-3"}`}>
+        <h3 className="text-center">{title}</h3>
+        <p>{product_type.charAt(0).toUpperCase() + product_type.slice(1)}</p>
+        <p>Quantity Sold: {quantitySold}</p>
+      </div>
     </div>
   );
 };
