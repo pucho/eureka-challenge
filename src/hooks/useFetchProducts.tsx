@@ -31,7 +31,7 @@ const useFetchProducts = () => {
         setProductTypes(uniqueProductTypes);
       } catch (error) {
         console.error(error);
-        setError("Error fetching data");
+        setError("Error loading products, please try again.");
       } finally {
         setLoading(false);
       }

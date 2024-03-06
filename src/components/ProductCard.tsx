@@ -1,3 +1,5 @@
+import { capitalize } from "../utils/stringUtils";
+
 type ProductVariant = {
   price: string;
 };
@@ -47,7 +49,7 @@ const ProductCard = (props: ProductCardProps) => {
       />
       <div className={`${type === "list" && "ml-3"}`}>
         <h3 className="text-center mb-2">{title}</h3>
-        <p>{product_type.charAt(0).toUpperCase() + product_type.slice(1)}</p>
+        <p>{capitalize(product_type)}</p>
         <p>Quantity Sold: {quantitySold}</p>
       </div>
     </div>
